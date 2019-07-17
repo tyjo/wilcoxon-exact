@@ -239,25 +239,25 @@ def wilcoxon_exact(x, y=None, alternative="two-sided"):
 
     ranks = scipy.stats.rankdata(np.abs(diff))
     signs = np.sign(diff)
-    T = (signs*ranks).sum()
+    W = (signs*ranks).sum()
 
     n = diff.size
     if n > 30:
         print("warning: sample size is large for exact calculation\n" + 
               "         calculation may be slow", file=sys.stderr)
-    rank_sum, pmf = compute_pmf(n)
+    rank_sums, pmf = compute_pmf(n)
 
     if alternative == "less":
-        idx = rank_sum <= T
+        idx = rank_sums <= W
         p = pmf[idx].sum()
     elif alternative == "greater":
-        idx = rank_sum >= T
+        idx = rank_sums >= W
         p = pmf[idx].sum()
     else:
-        idx = np.logical_or(rank_sum <= -np.abs(T), rank_sum >= np.abs(T))
+        idx = np.logical_or(rank_sums <= -np.abs(W), rank_sums >= np.abs(W))
         p = pmf[idx].sum()
 
-    return T, p
+    return W, p
 
 
 if __name__ == "__main__":
